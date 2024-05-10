@@ -1,0 +1,82 @@
+{% extends 'register/base.html' %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+    User Transactions
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        {% if transactions|length > 0 %}
+            <style>
+                table {
+                    border-collapse: collapse;
+                    width: 100%;
+                }
+                th, td {
+                    text-align: left;
+                    padding: 8px;
+                    border-bottom: 1px solid #ddd;
+                }
+                th {
+                    background-color: #4CAF50;
+                    color: white;
+                }
+                tr:hover {
+                    background-color: #f5f5f5;
+                }
+            </style>
+
+            <h2 style="text-align: center;">Transactions History</h2>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>User Email</th>
+                    <th>User Currency</th>
+                    <th>Transaction Email</th>
+                    <th>Transaction Currency</th>
+                    <th>Request ID</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date (Local Time)</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.payer_email_address }}</td>
+                        <td>{{ transaction.payer_currency }}</td>
+                        <td>{{ transaction.payee_email_address}}</td>
+                        <td>{{ transaction.payee_currency }}</td>
+                        <td>{{ transaction.request_id }}</td>
+                        <td>{{ transaction.amount_to_transfer_to_payee }}</td>
+                        <td>{{ transaction.status }}</td>
+                        <td>
+                            <span id="local-time-{{ forloop.counter }}">Loading...</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <script>
+                // Function to update local time for each transaction row
+                function updateLocalTime() {
+                    {% for transaction in transactions %}
+                        var timestamp{{ forloop.counter }} = "{{ transaction.date }}";
+                        var localTime{{ forloop.counter }} = new Date(timestamp{{ forloop.counter }}).toLocaleString();
+                        document.getElementById("local-time-{{ forloop.counter }}").textContent = localTime{{ forloop.counter }};
+                    {% endfor %}
+                }
+
+                // Call the function to update local time
+                updateLocalTime();
+            </script>
+        {% else %}
+            <h5>There are no transactions for user: <em>{{user.username}}</em>.</h5>
+        {% endif %}
+    {% else %}
+        <h5>Transactions Homepage. Please login to start ...</h5>
+    {% endif %}
+{% endblock %}

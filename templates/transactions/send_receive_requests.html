@@ -1,0 +1,336 @@
+{% extends 'register/base.html' %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+    Send Receive Requests
+{% endblock %}
+<!-- Send Receive request page is responsible for Send and Payments page for this app
+which gives the pop up and button trigger functionality-->
+
+{% block content %}
+    <meta charset="utf-8">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css
+" rel="stylesheet"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <style>
+        /* Style for tabs */
+        .tab {
+            overflow: hidden;
+        }
+
+        .tab button {
+            background-color: gainsboro;
+            float: left;
+            border: none;
+            outline: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .tab button:hover {
+            background-color: lightgray;
+        }
+
+        .tab button.active {
+            background-color: gray;
+        }
+
+        /* Style for table */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color:gainsboro;
+        }
+
+        /* Style for approve button */
+        .btn-approve {
+            background-color: darkgreen;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-approve:hover {
+            background-color:forestgreen;
+        }
+    </style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js
+"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+    <script>
+    function myfunc(){
+        var selectedvalue = document.getElementById("acceptdecline").value
+        console.log(selectedvalue)
+        var select = document.getElementById("acceptdecline");
+        var selectedOption = select.options[select.selectedIndex];
+        var amount = selectedOption.getAttribute("amount");
+        var sendamount = document.getElementById("accept_amount_id")
+        sendamount.value = amount
+        var request_id = selectedOption.getAttribute("request_id");
+        var transaction_id = document.getElementById("transaction_id")
+        transaction_id.value = request_id
+    }
+
+    </script>
+<div class="container mt-5">
+    <div class="container" style="display: flex;justify-content: center; ">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pills-payapp-tab" data-bs-toggle="pill" data-bs-target="#pills-payapp"
+                        type="button" role="tab" aria-controls="pills-payapp" aria-selected="true">Recieve Payments</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile"
+                        type="button" role="tab" aria-controls="pills-profile" aria-selected="false"> Send Payments</button>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-payapp" role="tabpanel" aria-labelledby="pills-payapp-tab"
+             tabindex="0">
+            <div class="container">
+                <div class="row align-items-start">
+
+                    <div class="col" style="display: flex; justify-content: end;">
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Request
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        {% if user.is_authenticated %}
+            {% if money_requests|length > 0 %}
+                <style>
+                    table {
+                        border-collapse: collapse;
+                        width: 100%;
+                    }
+                    th, td {
+                        text-align: left;
+                        padding: 8px;
+                        border-bottom: 1px solid #ddd;
+                    }
+                    th {
+                        background-color: #4CAF50;
+                        color: white;
+                    }
+                    tr:hover {
+                        background-color: #f5f5f5;
+                    }
+                </style>
+
+                <h1 style="text-align: center;">User Request Transactions</h1>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>User Email</th>
+                        <th>User Currency</th>
+                        <th>Transaction Email</th>
+                        <th>Transaction Currency</th>
+                        <th>Transaction Id</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for request in money_requests %}
+                        <tr>
+                            <td>{{ request.payer_email_address }}</td>
+                            <td>{{ request.payer_currency }}</td>
+                            <td>{{ request.payee_email_address}}</td>
+                            <td>{{ request.payee_currency }}</td>
+                            <td>{{ request.request_id }}</td>
+                            <td>{{ request.amount_to_transfer_to_payee }}</td>
+                            <td>{{ request.status }}</td>
+                            <td>{{ request.date }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <script>
+                    // any javascript code can be added here
+                </script>
+            {% else %}
+                <h5 style="text-align: center;">There are no transactions for user: <em>{{user.username}}</em>.</h5>
+            {% endif %}
+        {% else %}
+            <h5 style="text-align: center;">Transactions Homepage.</h5>
+        {% endif %}
+
+
+        </div>
+
+        <!-- Accept/Decline Request Button trigger modal -->
+    <form method="post" class="form-group" action="{% url 'acceptrejectmoneyrequest' %}">
+        {% csrf_token %}
+        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
+            <div class="row align-items-start">
+                <div class="col" style="display: flex; justify-content: end;">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                        Send
+                    </button>
+                    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Send Money</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="exampleFormControlInput1" class="form-label">Beneficiary</label>
+                                        <select id="acceptdecline" onchange="myfunc()"  class="form-select" aria-label="Default select example" name="beneficiary">
+                                            <option>please select</option>
+                                            {% for beneficiary in send_beneficiaries%}
+                                                <option name="beneficiary" value="{{ beneficiary }}" amount="{{beneficiary.amount}}" request_id="{{beneficiary.request_id}}">{{ beneficiary.email }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="mb-3">
+                                            <label for="amount-id" class="form-label">Amount</label>
+                                            <input disabled type="number" class="form-control" id="accept_amount_id" name="amount">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="transaction_id" class="form-label">Request ID</label>
+                                            <input disabled type="number" class="form-control" id="transaction_id" name="request_id">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" name="acceptbutton" value="accept">Accept</button>
+                                    <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal" name="rejectbutton" value="reject">Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <!-- Modal -->
+                {% if user.is_authenticated %}
+                    {% if owed_money_requests|length > 0 %}
+                        <style>
+                            table {
+                                border-collapse: collapse;
+                                width: 100%;
+                            }
+                            th, td {
+                                text-align: left;
+                                padding: 8px;
+                                border-bottom: 1px solid #ddd;
+                            }
+                            th {
+                                background-color: #4CAF50;
+                                color: white;
+                            }
+                            tr:hover {
+                                background-color: #f5f5f5;
+                            }
+                        </style>
+
+                        <h1 style="text-align: center;">User Owed Transactions</h1>
+
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>User Email</th>
+                                <th>User Currency</th>
+                                <th>Transaction Email</th>
+                                <th>Transaction Currency</th>
+                                <th>Transaction Id</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for request in owed_money_requests %}
+                                <tr>
+                                    <td>{{ request.payer_email_address }}</td>
+                                    <td>{{ request.payer_currency }}</td>
+                                    <td>{{ request.payee_email_address}}</td>
+                                    <td>{{ request.payee_currency }}</td>
+                                    <td>{{ request.request_id }}</td>
+                                    <td>{{ request.amount_to_transfer_to_payee }}</td>
+                                    <td>{{ request.status }}</td>
+                                    <td>{{ request.date }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <script>
+                            // any javascript code can be added here
+                        </script>
+                    {% else %}
+                        <h5 style="text-align: center;">There are no owed money requests for user: <em>{{user.username}}</em>.</h5>
+                    {% endif %}
+                {% else %}
+                    <h5 style="text-align: center;">Transactions Homepage</h5>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+        <!-- Send Request Button trigger modal -->
+    <form method="post" class="form-group"  action="{% url 'requestmoney' %}">
+        {% csrf_token %}
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Request Money</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Beneficiary</label>
+                            <select class="form-select" aria-label="Default select example" name="beneficiary">
+                                {% for beneficiary in beneficiaries %}
+                                    <option value="{{ beneficiary }}">{{ beneficiary }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="amount-id" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="amount-id" name="amount">
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" >Send</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    </div>
+</div>
+{% endblock %}

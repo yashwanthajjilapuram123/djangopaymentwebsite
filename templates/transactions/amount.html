@@ -1,0 +1,56 @@
+{% extends 'register/base.html' %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+    User Sent Amount
+{% endblock %}
+<!-- Amount Page dispalys the transfer amount data-->
+{% block content %}
+    {% if user.is_authenticated %}
+            <style>
+                table {
+                    border-collapse: collapse;
+                    width: 100%;
+                }
+                th, td {
+                    text-align: left;
+                    padding: 8px;
+                    border-bottom: 1px solid #ddd;
+                }
+                th {
+                    background-color: #4CAF50;
+                    color: white;
+                }
+                tr:hover {
+                    background-color: #f5f5f5;
+                }
+            </style>
+
+            <h1 style="text-align: center;">User Send Transaction</h1>
+
+            <table>
+                <tr>
+                    <th>User Email</th>
+                    <th>User Currency</th>
+                    <th>Request ID</th>
+                    <th>User Amount</th>
+                    <th>Payee Email</th>
+                    <th>Payee Currency</th>
+                    <th>Amount Transferred to Payee</th>
+                </tr>
+                <tbody>
+                    <tr>
+                        <td>{{ src_email }}</td>
+                        <td>{{ src_currency }}</td>
+                        <td>{{ request_id }}</td>
+                        <td>{{ src_amount}}</td>
+                        <td>{{ payee_email }}</td>
+                        <td>{{ payee_currency }}</td>
+                        <td>{{ amount_transferred_to_payee}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <script>
+            </script>
+    {% endif %}
+{% endblock %}
